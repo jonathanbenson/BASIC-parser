@@ -121,8 +121,8 @@
         #f))
 
 (define (numsign? char-stream)
-    (if (or (not (eq? (plus? char-stream) #f) (or (not (eq? (minus? char-stream))))))
-        (list 'RETURN "return")
+    (if (or (eq? (string-ref char-stream 0) #\+) (eq? (string-ref char-stream 0) #\-))
+        (list 'NUMSIGN (string (string-ref char-stream 0)))
         #f))
 
 (provide
@@ -141,4 +141,5 @@
     return?
     lparen?
     rparen?
-    id?)
+    id?
+    numsign?)

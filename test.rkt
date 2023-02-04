@@ -103,3 +103,13 @@
 (check-equal? (rparen? ") ") (list 'RPAREN ")"))
 (check-equal? (rparen? "))") (list 'RPAREN ")"))
 (check-equal? (rparen? " )") #f)
+
+; numsign?
+(check-equal? (numsign? "+") (list 'NUMSIGN "+"))
+(check-equal? (numsign? "-") (list 'NUMSIGN "-"))
+(check-equal? (numsign? "+ ") (list 'NUMSIGN "+"))
+(check-equal? (numsign? "- ") (list 'NUMSIGN "-"))
+(check-equal? (numsign? "++") (list 'NUMSIGN "+"))
+(check-equal? (numsign? "--") (list 'NUMSIGN "-"))
+(check-equal? (numsign? " +") #f)
+(check-equal? (numsign? " -") #f)
