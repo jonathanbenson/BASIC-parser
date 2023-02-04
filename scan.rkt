@@ -1,0 +1,48 @@
+
+#lang racket
+
+(define nonzero-digits (list #\1 #\2 #\3 #\4 #\5 #\6 #\7 #\8 #\9))
+
+; the following functions check to see whether or not the start of the char-stream
+; starts with a particular pattern
+; If true, then it returns a list with the first element a symbol of the token type
+; else it returns false
+(define (eop? char-stream)
+    (if (string-prefix? char-stream "$$")
+        (list 'EOP "$$")
+        #f))
+
+(define (eol? char-stream)
+    (if (string-prefix? char-stream "\n")
+        (list 'EOL "\n")
+        #f))
+
+; an idx is zero or more nonzero digits
+(define (idx? char-stream [idx ""])
+    
+    ; if the char-stream is not empty and the first char in the char-stream is a nonzero digit
+    (if (and (non-empty-string? char-stream) (not (eq? (member (string-ref char-stream 0) nonzero-digits) #f)))
+        (idx? (substring char-stream 1) (string-append idx (substring char-stream 0 1)))
+
+        (if (not (non-empty-string? idx))
+            #f
+            (list 'IDX idx))))
+
+(define (colon? char-stream)
+    (if (string-prefix? char-stream ":")
+        (list 'COLON ":")
+        #f))
+
+(define (assign-op? char-stream)
+    (if (string-prefix? char-stream "=")
+        (list 'ASSIGN-OP "=")
+        #f))
+
+
+
+(provide
+    eop?
+    eol?
+    idx?
+    colon?
+    assign-op?)
