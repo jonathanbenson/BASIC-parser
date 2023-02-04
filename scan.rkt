@@ -1,12 +1,25 @@
 
 #lang racket
 
+(define whitespaces (list #\space #\tab))
 (define nonzero-digits (list #\1 #\2 #\3 #\4 #\5 #\6 #\7 #\8 #\9))
 
 ; the following functions check to see whether or not the start of the char-stream
 ; starts with a particular pattern
 ; If true, then it returns a list with the first element a symbol of the token type
 ; else it returns false
+
+(define (ws? char-stream [ws ""])
+    
+    ; if the char-stream is not empty and the first char in the char-stream is a whitespace char
+    (if (and (non-empty-string? char-stream) (not (eq? (member (string-ref char-stream 0) whitespaces) #f)))
+        (ws? (substring char-stream 1) (string-append ws (substring char-stream 0 1)))
+
+        (if (not (non-empty-string? ws))
+            #f
+            (list 'WS ws))))
+
+
 (define (eop? char-stream)
     (if (string-prefix? char-stream "$$")
         (list 'EOP "$$")
@@ -113,6 +126,7 @@
         #f))
 
 (provide
+    ws?
     eop?
     eol?
     idx?

@@ -3,6 +3,11 @@
 
 (require rackunit "scan.rkt")
 
+; ws?
+(check-equal? (ws? " \t") (list 'WS " \t"))
+(check-equal? (ws? " \ta") (list 'WS " \t"))
+(check-equal? (ws? "a \t") #f)
+
 ; eop?
 (check-equal? (eop? "$$") (list 'EOP "$$"))
 (check-equal? (eop? "$$ ") (list 'EOP "$$"))
