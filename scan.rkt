@@ -33,16 +33,90 @@
         (list 'COLON ":")
         #f))
 
+(define (id? char-stream [id ""]) #t)
+
 (define (assign-op? char-stream)
     (if (string-prefix? char-stream "=")
         (list 'ASSIGN-OP "=")
         #f))
 
+(define (if? char-stream)
+    (if (string-prefix? char-stream "if")
+        (list 'IF "if")
+        #f))
 
+(define (then? char-stream)
+    (if (string-prefix? char-stream "then")
+        (list 'THEN "then")
+        #f))
+
+(define (read? char-stream)
+    (if (string-prefix? char-stream "read")
+        (list 'READ "read")
+        #f))
+
+(define (write? char-stream)
+    (if (string-prefix? char-stream "write")
+        (list 'WRITE "write")
+        #f))
+
+(define (goto? char-stream)
+    (if (string-prefix? char-stream "goto")
+        (list 'GOTO "goto")
+        #f))
+
+(define (gosub? char-stream)
+    (if (string-prefix? char-stream "gosub")
+        (list 'GOSUB "gosub")
+        #f))
+
+(define (return? char-stream)
+    (if (string-prefix? char-stream "return")
+        (list 'RETURN "return")
+        #f))
+
+(define (lparen? char-stream)
+    (if (string-prefix? char-stream "(")
+        (list 'LPAREN "(")
+        #f))
+
+(define (rparen? char-stream)
+    (if (string-prefix? char-stream ")")
+        (list 'RPAREN ")")
+        #f))
+
+(define (plus? char-stream)
+    (if (string-prefix? char-stream "+")
+        (list 'PLUS "+")
+        #f))
+
+(define (minus? char-stream)
+    (if (string-prefix? char-stream "-")
+        (list 'MINUS "-")
+        #f))
+
+(define (num? char-stream)
+    (if (string-prefix? char-stream "return")
+        (list 'RETURN "return")
+        #f))
+
+(define (numsign? char-stream)
+    (if (or (not (eq? (plus? char-stream) #f) (or (not (eq? (minus? char-stream))))))
+        (list 'RETURN "return")
+        #f))
 
 (provide
     eop?
     eol?
     idx?
     colon?
-    assign-op?)
+    assign-op?
+    if?
+    then?
+    read?
+    write?
+    goto?
+    gosub?
+    return?
+    lparen?
+    rparen?)
