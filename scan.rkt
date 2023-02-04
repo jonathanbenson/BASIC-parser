@@ -33,7 +33,14 @@
         (list 'COLON ":")
         #f))
 
-(define (id? char-stream [id ""]) #t)
+(define (id? char-stream [id ""])
+    ; if the char-stream is not empty and the first char in the char-stream is a letter (upper or lowercase)
+    (if (and (non-empty-string? char-stream) (char-alphabetic? (string-ref char-stream 0)))
+        (id? (substring char-stream 1) (string-append id (substring char-stream 0 1)))
+
+        (if (not (non-empty-string? id))
+            #f
+            (list 'ID id))))
 
 (define (assign-op? char-stream)
     (if (string-prefix? char-stream "=")
@@ -119,4 +126,5 @@
     gosub?
     return?
     lparen?
-    rparen?)
+    rparen?
+    id?)

@@ -30,6 +30,15 @@
 (check-equal? (colon? "::") (list 'COLON ":"))
 (check-equal? (colon? " :") #f)
 
+; id?
+(check-equal? (id? "abcABC") (list 'ID "abcABC"))
+(check-equal? (id? "abcABC ") (list 'ID "abcABC"))
+(check-equal? (id? "abcABC abcABC") (list 'ID "abcABC"))
+(check-equal? (id? "abcABC123") (list 'ID "abcABC"))
+(check-equal? (id? " abcABC") #f)
+(check-equal? (id? "0abcABC") #f)
+(check-equal? (id? " abcABC") #f)
+
 ; assign-op?
 (check-equal? (assign-op? "=") (list 'ASSIGN-OP "="))
 (check-equal? (assign-op? "= ") (list 'ASSIGN-OP "="))
