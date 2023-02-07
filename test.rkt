@@ -8,6 +8,12 @@
 (check-equal? (ws? " \ta") (list 'WS " \t"))
 (check-equal? (ws? "a \t") #f)
 
+; eof?
+(check-equal? (eof? "") (list 'EOF ""))
+(check-equal? (eof? " ") #f)
+(check-equal? (eof? "123") #f)
+(check-equal? (eof? "abc") #f)
+
 ; eop?
 (check-equal? (eop? "$$") (list 'EOP "$$"))
 (check-equal? (eop? "$$ ") (list 'EOP "$$"))

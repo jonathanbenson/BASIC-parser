@@ -5,6 +5,7 @@
 (define nonzero-digits (list #\1 #\2 #\3 #\4 #\5 #\6 #\7 #\8 #\9))
 
 ; Possible token types:
+; EOF -> ""
 ; EOP -> "$$"
 ; EOL -> "\n"
 ; ZERO-DIGIT -> "0"
@@ -25,11 +26,24 @@
 ; RETURN -> "return"
 ; WS -> whitespace
 
+(define (get-token char-stream token-matchers) #t)
+
+(define (scan char-stream token-matchers [token-stream (list)])
+    (let ([next-token (get-token char-stream token-matchers)])
+        (if (eq? (first next-token) 'EOF)
+            token-stream
+            (scan (substring char-stream (string-length (second next-token))) token-matchers (append token-stream next-token)))))
+
 ; the following functions check to see whether or not the start of the char-stream
 ; starts with a particular pattern
 ; If true, then it returns a list with the first element a symbol of the token type
 ; else it returns false
 
+; EOF -> ""
+(define (eof? char-stream)
+    (if (not (non-empty-string? char-stream))
+        (list 'EOF "")
+        #f))
 
 ; EOP -> "$$"
 (define (eop? char-stream)
@@ -156,6 +170,7 @@
 
 (provide
     ws?
+    eof?
     eop?
     eol?
     colon?
