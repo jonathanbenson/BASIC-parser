@@ -174,7 +174,33 @@
             #f
             (list 'WS ws))))
 
+(define token-matchers
+    (list
+        eof?
+        eop?
+        eol?
+        zero-digit?
+        nonzero-digit?
+        if?
+        read?
+        write?
+        goto?
+        gosub?
+        then?
+        return?
+        id?
+        colon?
+        assign-op?
+        plus?
+        minus?
+        lparen?
+        rparen?
+        ws?))
+
 (provide
+    token-matchers
+    get-token
+    scan
     ws?
     eof?
     eop?
