@@ -20,15 +20,6 @@
 (check-equal? (eol? "\n\n") (list 'EOL "\n"))
 (check-equal? (eol? " \n") #f)
 
-; idx?
-(check-equal? (idx? "123") (list 'IDX "123"))
-(check-equal? (idx? "123 ") (list 'IDX "123"))
-(check-equal? (idx? "123 123") (list 'IDX "123"))
-(check-equal? (idx? "123a123") (list 'IDX "123"))
-(check-equal? (idx? " 123") #f)
-(check-equal? (idx? "0123") #f)
-(check-equal? (idx? "-123") #f)
-
 ; colon?
 (check-equal? (colon? ":") (list 'COLON ":"))
 (check-equal? (colon? ": ") (list 'COLON ":"))
@@ -104,12 +95,46 @@
 (check-equal? (rparen? "))") (list 'RPAREN ")"))
 (check-equal? (rparen? " )") #f)
 
-; numsign?
-(check-equal? (numsign? "+") (list 'NUMSIGN "+"))
-(check-equal? (numsign? "-") (list 'NUMSIGN "-"))
-(check-equal? (numsign? "+ ") (list 'NUMSIGN "+"))
-(check-equal? (numsign? "- ") (list 'NUMSIGN "-"))
-(check-equal? (numsign? "++") (list 'NUMSIGN "+"))
-(check-equal? (numsign? "--") (list 'NUMSIGN "-"))
-(check-equal? (numsign? " +") #f)
-(check-equal? (numsign? " -") #f)
+; zero-digit?
+(check-equal? (zero-digit? "0") (list 'ZERO-DIGIT "0"))
+(check-equal? (zero-digit? "0 ") (list 'ZERO-DIGIT "0"))
+(check-equal? (zero-digit? "00") (list 'ZERO-DIGIT "0"))
+(check-equal? (zero-digit? " 0") #f)
+
+; nonzero-digit?
+(check-equal? (nonzero-digit? "0") #f)
+
+(check-equal? (nonzero-digit? "1") (list 'NONZERO-DIGIT "1"))
+(check-equal? (nonzero-digit? "1 ") (list 'NONZERO-DIGIT "1"))
+(check-equal? (nonzero-digit? "11") (list 'NONZERO-DIGIT "1"))
+(check-equal? (nonzero-digit? " 1") #f)
+
+(check-equal? (nonzero-digit? "2") (list 'NONZERO-DIGIT "2"))
+(check-equal? (nonzero-digit? "2 ") (list 'NONZERO-DIGIT "2"))
+(check-equal? (nonzero-digit? "22") (list 'NONZERO-DIGIT "2"))
+(check-equal? (nonzero-digit? " 2") #f)
+
+(check-equal? (nonzero-digit? "3") (list 'NONZERO-DIGIT "3"))
+(check-equal? (nonzero-digit? "3 ") (list 'NONZERO-DIGIT "3"))
+(check-equal? (nonzero-digit? "33") (list 'NONZERO-DIGIT "3"))
+(check-equal? (nonzero-digit? " 3") #f)
+
+(check-equal? (nonzero-digit? "4") (list 'NONZERO-DIGIT "4"))
+(check-equal? (nonzero-digit? "4 ") (list 'NONZERO-DIGIT "4"))
+(check-equal? (nonzero-digit? "44") (list 'NONZERO-DIGIT "4"))
+(check-equal? (nonzero-digit? " 4") #f)
+
+(check-equal? (nonzero-digit? "5") (list 'NONZERO-DIGIT "5"))
+(check-equal? (nonzero-digit? "5 ") (list 'NONZERO-DIGIT "5"))
+(check-equal? (nonzero-digit? "55") (list 'NONZERO-DIGIT "5"))
+(check-equal? (nonzero-digit? " 5") #f)
+
+(check-equal? (nonzero-digit? "6") (list 'NONZERO-DIGIT "6"))
+(check-equal? (nonzero-digit? "6 ") (list 'NONZERO-DIGIT "6"))
+(check-equal? (nonzero-digit? "66") (list 'NONZERO-DIGIT "6"))
+(check-equal? (nonzero-digit? " 6") #f)
+
+(check-equal? (nonzero-digit? "7") (list 'NONZERO-DIGIT "7"))
+(check-equal? (nonzero-digit? "7 ") (list 'NONZERO-DIGIT "7"))
+(check-equal? (nonzero-digit? "77") (list 'NONZERO-DIGIT "7"))
+(check-equal? (nonzero-digit? " 7") #f)
