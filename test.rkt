@@ -5,7 +5,13 @@
 
 ; scan
 (define file01-char-stream (file->string "./test_input/file01.txt"))
+(define file02-char-stream (file->string "./test_input/file02.txt"))
+(define file03-char-stream (file->string "./test_input/file03.txt"))
+(define file04-char-stream (file->string "./test_input/file04.txt"))
+(define file05-char-stream (file->string "./test_input/file05.txt"))
+(define file06-char-stream (file->string "./test_input/file06.txt"))
 
+; scan test over file01
 (check-equal? (scan file01-char-stream token-matchers)
     (list
         'NONZERO-DIGIT "1"
@@ -24,6 +30,68 @@
         'EOL "\n"
         'EOF ""))
 
+; scan test for file03
+(check-equal? (scan file03-char-stream token-matchers)
+    (list
+        'NONZERO-DIGIT "1"
+        'ZERO-DIGIT "0"
+        'READ "read"
+        'ID "A"
+        'EOL "\n"
+        'NONZERO-DIGIT "2"
+        'ZERO-DIGIT "0"
+        'READ "read"
+        'ID "B"
+        'EOL "\n"
+        'NONZERO-DIGIT "3"
+        'ZERO-DIGIT "0"
+        'GOSUB "gosub"
+        'NONZERO-DIGIT "4"
+        'ZERO-DIGIT "0"
+        'ZERO-DIGIT "0"
+        'EOL "\n"
+        'NONZERO-DIGIT "4"
+        'ZERO-DIGIT "0"
+        'IF "if"
+        'ID "C"
+        'ASSIGN-OP "="
+        'NONZERO-DIGIT "4"
+        'ZERO-DIGIT "0"
+        'ZERO-DIGIT "0"
+        'THEN "then"
+        'WRITE "write"
+        'ID "C"
+        'EOL "\n"
+        'NONZERO-DIGIT "5"
+        'ZERO-DIGIT "0"
+        'IF "if"
+        'ID "C"
+        'ASSIGN-OP "="
+        'ZERO-DIGIT "0"
+        'THEN "then"
+        'GOTO "goto"
+        'NONZERO-DIGIT "1"
+        'ZERO-DIGIT "0"
+        'ZERO-DIGIT "0"
+        'ZERO-DIGIT "0"
+        'EOL "\n"
+        'NONZERO-DIGIT "4"
+        'ZERO-DIGIT "0"
+        'ZERO-DIGIT "0"
+        'ID "C"
+        'ASSIGN-OP "="
+        'ID "A"
+        'PLUS "+"
+        'ID "B"
+        'COLON ":"
+        'RETURN "return"
+        'EOL "\n"
+        'EOP "$$"
+        'EOL "\n"
+        'EOF ""))
+
+        
+; scan test for file06
 
 ; get-token
 

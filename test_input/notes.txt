@@ -1,0 +1,7 @@
+1. Correct
+2. Unknown operator; should get scan error on line 30.
+3. Correct (at least, syntactically) 
+4. Syntax error (repeated operator) on line 30. 
+   The misspelled identifier in line 40 is NOT a syntax error. 
+5. Syntax error (no line number)
+6. Correct 
