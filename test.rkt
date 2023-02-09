@@ -92,6 +92,38 @@
 
         
 ; scan test for file06
+(check-equal? (scan file06-char-stream token-matchers)
+    (list
+        'NONZERO-DIGIT "1"
+        'ZERO-DIGIT "0"
+        'ZERO-DIGIT "0"
+        'READ "read"
+        'ID "A"
+        'EOL "\n"
+        'NONZERO-DIGIT "2"
+        'ZERO-DIGIT "0"
+        'ZERO-DIGIT "0"
+        'READ "read"
+        'ID "B"
+        'EOL "\n"
+        'NONZERO-DIGIT "3"
+        'ZERO-DIGIT "0"
+        'ZERO-DIGIT "0"
+        'ZERO-DIGIT "0"
+        'ZERO-DIGIT "0"
+        'WRITE "write"
+        'ID "A"
+        'PLUS "+"
+        'LPAREN "("
+        'ID "B"
+        'MINUS "-"
+        'NONZERO-DIGIT "1"
+        'RPAREN ")"
+        'EOL "\n"
+        'EOP "$$"
+        'EOL "\n"
+        'EOF ""))
+
 
 ; get-token
 
