@@ -3,6 +3,28 @@
 
 (require rackunit "scan.rkt")
 
+; scan
+(define file01-char-stream (file->string "./test_input/file01.txt"))
+
+(check-equal? (scan file01-char-stream token-matchers)
+    (list
+        'NONZERO-DIGIT "1"
+        'ZERO-DIGIT "0"
+        'GOTO "goto"
+        'NONZERO-DIGIT "2"
+        'ZERO-DIGIT "0"
+        'EOL "\n"
+        'NONZERO-DIGIT "2"
+        'ZERO-DIGIT "0"
+        'GOTO "goto"
+        'NONZERO-DIGIT "1"
+        'ZERO-DIGIT "0"
+        'EOL "\n"
+        'EOP "$$"
+        'EOL "\n"
+        'EOF ""))
+
+
 ; get-token
 
 ; get-token ... EOF -> ""

@@ -1,7 +1,7 @@
 
 #lang racket
 
-(define whitespaces (list #\space #\tab))
+(define whitespaces (list #\space #\tab #\u0D))
 (define nonzero-digits (list #\1 #\2 #\3 #\4 #\5 #\6 #\7 #\8 #\9))
 
 ; Possible token types:
@@ -24,11 +24,11 @@
 ; LPAREN -> "("
 ; RPAREN -> ")"
 ; RETURN -> "return"
-; WS -> whitespace
+; WS -> whitespace (removed by scanner with final output of token stream)
 
 (define (get-token char-stream token-matchers)
     (if (empty? token-matchers)
-        #f
+        (list 'INVALID-TOKEN "x")
         (let ([match-result ((first token-matchers) char-stream)])
             (if (and (eq? match-result #f))
                 (get-token char-stream (rest token-matchers))
@@ -37,8 +37,10 @@
 (define (scan char-stream token-matchers [token-stream (list)])
     (let ([next-token (get-token char-stream token-matchers)])
         (if (eq? (first next-token) 'EOF)
-            token-stream
-            (scan (substring char-stream (string-length (second next-token))) token-matchers (append token-stream next-token)))))
+            (append token-stream next-token)
+            (if (eq? (first next-token) 'WS)
+                (scan (substring char-stream (string-length (second next-token))) token-matchers token-stream)
+                (scan (substring char-stream (string-length (second next-token))) token-matchers (append token-stream next-token))))))
 
 ; the following functions check to see whether or not the start of the char-stream
 ; starts with a particular pattern
