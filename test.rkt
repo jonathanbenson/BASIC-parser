@@ -30,6 +30,46 @@
         'EOL "\n"
         'EOF ""))
 
+; scan test over file02
+(check-equal? (scan file02-char-stream token-matchers)
+    (list
+        'NONZERO-DIGIT "1"
+        'ZERO-DIGIT "0"
+        'ID "A"
+        'ASSIGN-OP "="
+        'NONZERO-DIGIT "1"
+        'ZERO-DIGIT "0"
+        'EOL "\n"
+
+        'NONZERO-DIGIT "2"
+        'ZERO-DIGIT "0"
+        'ID "B"
+        'ASSIGN-OP "="
+        'NONZERO-DIGIT "2"
+        'ZERO-DIGIT "0"
+        'EOL "\n"
+
+        'NONZERO-DIGIT "3"
+        'ZERO-DIGIT "0"
+        'ID "C"
+        'ASSIGN-OP "="
+        'ID "B"
+        'INVALID-TOKEN "x"
+        'ID "A"
+        'EOL "\n"
+
+        'NONZERO-DIGIT "4"
+        'ZERO-DIGIT "0"
+        'WRITE "write"
+        'ID "C"
+        'EOL "\n"
+
+        'EOP "$$"
+        'EOL "\n"
+        'EOF ""))
+
+
+
 ; scan test for file03
 (check-equal? (scan file03-char-stream token-matchers)
     (list
