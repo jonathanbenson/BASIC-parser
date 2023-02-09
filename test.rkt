@@ -145,9 +145,9 @@
 (check-equal? (first (get-token " 123" token-matchers)) 'WS)
 
 ; ws?
-(check-equal? (ws? " \t") (list 'WS " \t"))
-(check-equal? (ws? " \ta") (list 'WS " \t"))
-(check-equal? (ws? "a \t") #f)
+(check-equal? (ws? " \t\r") (list 'WS " \t\r"))
+(check-equal? (ws? " \t\ra") (list 'WS " \t\r"))
+(check-equal? (ws? "a \t\r") #f)
 
 ; eof?
 (check-equal? (eof? "") (list 'EOF ""))
