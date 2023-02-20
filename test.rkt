@@ -3,4 +3,4 @@
 
 
 (require "test/token-matchers.test.rkt")
-(require "test/scan.test.rkt")
+(require "test/scanner.test.rkt")

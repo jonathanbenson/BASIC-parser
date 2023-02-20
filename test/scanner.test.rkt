@@ -2,7 +2,7 @@
 #lang racket
 
 (require rackunit "../src/token-matchers.rkt")
-(require rackunit "../src/scan.rkt")
+(require rackunit "../src/scanner.rkt")
 
 ; scan
 (define file01-char-stream (file->string "test_input/file01.txt"))
