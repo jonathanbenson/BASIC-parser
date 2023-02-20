@@ -1,0 +1,11 @@
+program -> linelist EOP
+linelist -> line linelist | epsilon 
+line -> idx stmt linetail* EOL
+idx -> NONZERO-DIGIT digit* 
+linetail -> COLON stmt | epsilon 
+stmt -> ID ASSIGN-OP expr | IF expr THEN stmt | READ ID | WRITE expr | GOTO idx | GOSUB idx | RETURN
+expr -> ID etail | num etail | (expr)
+etail -> PLUS expr | MINUS expr | ASSIGN-OP expr | epsilon
+num -> numsign digit digit*
+numsign -> PLUS | MINUS | epsilon 
+digit -> ZERO-DIGIT | NONZERO-DIGIT 
