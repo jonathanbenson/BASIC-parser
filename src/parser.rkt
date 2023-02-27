@@ -55,7 +55,22 @@
         [(match-token 'COLON token-stream) (stmt (rest token-stream line-number))]
         [else (line token-stream line-number)]))
 
-(define (expr token-stream line-number parent-callback) #t)
+(define (expr token-stream line-number parent-callback)
+    (cond
+        [(match-token 'ID token-stream) (etail (rest token-stream) line-number)]
+        [(match-token 'LPAREN token-stream) (expr (rest token-stream) line-number expr)]
+        [else (num token-stream line-number expr)]))
+
+(define (etail token-stream line-number)
+    (cond
+        [(match-any-token (list 'PLUS 'MINUS 'ASSIGN-OP) (expr (rest token-stream line-number)))]
+        [else (syntax-error line-number)]))
+
+(define (num token-stream line-number parent-callback)
+    (cond
+        [(match-any-token (list 'PLUS 'MINUS) token-stream) (num (rest token-stream) line-number parent-callback)]
+        [(match-any-token (list 'ZERO-DIGIT 'NONZERO-DIGIT) token-stream) (num (rest token-stream) line-number parent-callback)]
+        [else (parent-callback token-stream line-number)]))
 
 (provide
     match-token
