@@ -29,7 +29,7 @@
 (define (line token-stream line-number)
     (cond
         [(match-token 'NONZERO-DIGIT token-stream) (idx (rest token-stream) line-number line)]
-        ;;; [(match-any-token (list 'ID 'IF 'READ 'WRITE 'GOTO 'GOSUB 'RETURN)) (stmt token-stream line-number)]
+        [(match-any-token (list 'ID 'IF 'READ 'WRITE 'GOTO 'GOSUB 'RETURN)) (stmt token-stream line-number)]
         ;;; [(match-token 'COLON token-stream) (linetail token-stream line-number)]
         [(match-token 'EOL token-stream) (linelist token-stream (+ line-number 1))]
         [else (syntax-error line-number)]))
@@ -39,13 +39,23 @@
         [(match-token 'NONZERO-DIGIT token-stream) (idx (rest token-stream) line-number)]
         [else (parent-callback (rest token-stream) line-number)]))
 
-;;; (define (expr token-stream line-number parent-callback)
-;;;     )
+(define (stmt token-stream line-number)
+    (cond
+        [(and (match-token 'ID token-stream) (match-token 'ASSIGN-OP (rest token-stream))) (expr (rest (rest token-stream)) line-number linetail)]
+        [(match-token 'IF token-stream) (expr (rest token-stream) line-number stmt)]
+        [(match-token 'THEN token-stream) (stmt (rest token-stream) line-number)]
+        [(and (match-token 'READ token-stream) (match-token 'ID (rest token-stream))) (linetail (rest (rest token-stream)) line-number)]
+        [(match-token 'WRITE token-stream) (expr (rest token-stream) line-number linetail)]
+        [(match-token 'GOTO token-stream) (idx (rest token-stream) line-number linetail)]
+        [(match-token 'GOSUB token-stream) (idx (rest token-stream) line-number linetail)]
+        [(match-token 'RETURN token-stream) (linetail (rest token-stream) line-number)]))
 
-;;; (define (stmt token-stream line-number)
-;;;     (cond
-;;;         [(and (match-token 'READ token-stream) (match-token 'ID (rest token-stream))) (linetail (rest (rest token-stream)) line-number)]
-;;;         [(and (match-token 'READ token-stream) (match-token 'ID (rest token-stream))) (linetail (rest (rest token-stream)) line-number)]))
+(define (linetail token-stream line-number)
+    (cond
+        [(match-token 'COLON token-stream) (stmt (rest token-stream line-number))]
+        [else (line token-stream line-number)]))
+
+(define (expr token-stream line-number parent-callback) #t)
 
 (provide
     match-token
