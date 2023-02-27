@@ -30,7 +30,7 @@
     (cond
         [(match-token 'NONZERO-DIGIT token-stream) (idx (rest token-stream) line-number line)]
         [(match-any-token (list 'ID 'IF 'READ 'WRITE 'GOTO 'GOSUB 'RETURN)) (stmt token-stream line-number)]
-        ;;; [(match-token 'COLON token-stream) (linetail token-stream line-number)]
+        [(match-token 'COLON token-stream) (linetail token-stream line-number)]
         [(match-token 'EOL token-stream) (linelist token-stream (+ line-number 1))]
         [else (syntax-error line-number)]))
 
