@@ -1,5 +1,4 @@
 #lang racket
+(require "./src/parser.rkt")
 
-(file->string "grammar.txt")
-
-(define (tokenize char-stream) #t)
+(parse "test_input/file04.txt")

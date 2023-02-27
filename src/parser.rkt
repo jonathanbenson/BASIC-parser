@@ -1,5 +1,11 @@
 #lang racket
 
+(require rackunit "../src/scanner.rkt")
+(require rackunit "../src/token-matchers.rkt")
+
+(define (parse file-path)
+    (program (scan (file->string file-path) token-matchers)))
+
 (define (match-token expected-token-type token-stream)
     (if (eq? expected-token-type (first (first token-stream)))
         #t
@@ -73,6 +79,7 @@
         [else (parent-callback token-stream line-number)]))
 
 (provide
+    parse
     match-token
     match-any-token
     syntax-error
