@@ -17,33 +17,35 @@
         [(eq? (first expected-token-types) (first (first token-stream))) #t]
         [else (match-any-token (rest expected-token-types) token-stream)]))
 
-(define (syntax-error line-number)
-    (string-append "Syntax error on line " (number->string line-number) "."))
+(define (syntax-error line-number debug-msg last-token)
+    (string-append "Syntax error on line " (number->string line-number) ". Debug message: " debug-msg "... Last token: " (symbol->string last-token)))
 
 (define (program token-stream [line-number 1])
     (cond
-        [(match-token 'NONZERO-DIGIT token-stream) (linelist (rest token-stream) line-number)]
+        [(match-token 'NONZERO-DIGIT token-stream) (linelist token-stream line-number)]
         [(match-token 'EOP token-stream) "Accept"]
-        [else (syntax-error line-number)]))
+        [else (syntax-error line-number "program" (first (first token-stream)))]))
 
 (define (linelist token-stream line-number)
     (cond
-        [(match-token 'NONZERO-DIGIT token-stream) (line (rest token-stream) line-number)]
+        [(match-token 'NONZERO-DIGIT token-stream) (line token-stream line-number)]
         [(match-token 'EOP token-stream) (program token-stream line-number)]
-        [else (syntax-error line-number)]))
+        [else (syntax-error line-number "linelist" (first (first token-stream)))]))
 
 (define (line token-stream line-number)
     (cond
-        [(match-token 'NONZERO-DIGIT token-stream) (idx (rest token-stream) line-number line)]
-        [(match-any-token (list 'ID 'IF 'READ 'WRITE 'GOTO 'GOSUB 'RETURN)) (stmt token-stream line-number)]
+        [(match-token 'NONZERO-DIGIT token-stream) (idx token-stream line-number line)]
+        [(match-any-token (list 'ID 'IF 'READ 'WRITE 'GOTO 'GOSUB 'RETURN) token-stream) (stmt token-stream line-number)]
         [(match-token 'COLON token-stream) (linetail token-stream line-number)]
-        [(match-token 'EOL token-stream) (linelist token-stream (+ line-number 1))]
-        [else (syntax-error line-number)]))
+        [(match-token 'EOL token-stream) (linelist (rest token-stream) (+ line-number 1))]
+        [else (syntax-error line-number "line" (first (first token-stream)))]))
 
-(define (idx token-stream line-number parent-callback)
+(define (idx token-stream line-number parent-callback [found-nonzero-digit? #f])
     (cond
-        [(match-token 'NONZERO-DIGIT token-stream) (idx (rest token-stream) line-number)]
-        [else (parent-callback (rest token-stream) line-number)]))
+        [(match-token 'NONZERO-DIGIT token-stream) (idx (rest token-stream) line-number parent-callback #t)]
+        [(and (match-token 'ZERO-DIGIT token-stream) (not found-nonzero-digit?)) (syntax-error line-number "line" (first (first token-stream)))]
+        [(and (match-token 'ZERO-DIGIT token-stream) found-nonzero-digit?) (idx (rest token-stream) line-number parent-callback #t)]
+        [else (parent-callback token-stream line-number)]))
 
 (define (stmt token-stream line-number)
     (cond
@@ -69,8 +71,8 @@
 
 (define (etail token-stream line-number)
     (cond
-        [(match-any-token (list 'PLUS 'MINUS 'ASSIGN-OP) (expr (rest token-stream line-number)))]
-        [else (syntax-error line-number)]))
+        [(match-any-token (list 'PLUS 'MINUS 'ASSIGN-OP) (expr (rest token-stream) line-number))]
+        [else (syntax-error line-number "etail" (first (first token-stream)))]))
 
 (define (num token-stream line-number parent-callback)
     (cond
