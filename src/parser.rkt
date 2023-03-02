@@ -67,18 +67,27 @@
     (cond
         [(match-token 'ID token-stream) (etail (rest token-stream) line-number)]
         [(match-token 'LPAREN token-stream) (expr (rest token-stream) line-number expr)]
-        [else (num token-stream line-number expr)]))
+        [else (let ([is-num-result (num token-stream)])
+            (if (first is-num-result)
+                (etail (second is-num-result) line-number)
+                (syntax-error line-number "expr" (first (first (second is-num-result))))))]))
 
 (define (etail token-stream line-number)
     (cond
-        [(match-any-token (list 'PLUS 'MINUS 'ASSIGN-OP) (expr (rest token-stream) line-number))]
+        [(match-any-token (list 'PLUS 'MINUS 'ASSIGN-OP) (expr (rest token-stream) line-number expr))]
         [else (syntax-error line-number "etail" (first (first token-stream)))]))
 
-(define (num token-stream line-number parent-callback)
+;;; (define (num token-stream line-number parent-callback)
+;;;     (cond
+;;;         [(match-any-token (list 'PLUS 'MINUS) token-stream) (num (rest token-stream) line-number parent-callback)]
+;;;         [(match-any-token (list 'ZERO-DIGIT 'NONZERO-DIGIT) token-stream) (num (rest token-stream) line-number parent-callback)]
+;;;         [else (parent-callback token-stream line-number)]))
+
+(define (num token-stream [found-numsign? #f] [found-digit? #f])
     (cond
-        [(match-any-token (list 'PLUS 'MINUS) token-stream) (num (rest token-stream) line-number parent-callback)]
-        [(match-any-token (list 'ZERO-DIGIT 'NONZERO-DIGIT) token-stream) (num (rest token-stream) line-number parent-callback)]
-        [else (parent-callback token-stream line-number)]))
+        [(match-any-token (list 'PLUS 'MINUS) token-stream) (if found-numsign? (list #f) (num (rest token-stream) #t found-digit?))]
+        [(match-any-token (list 'NONZERO-DIGIT 'ZERO-DIGIT) token-stream) (num (rest token-stream) found-numsign? #t)]
+        [else (if (or (and found-numsign? found-digit?) found-digit?) (list #t (rest token-stream)) (list #f token-stream))]))
 
 (provide
     parse
