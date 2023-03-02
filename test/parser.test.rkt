@@ -32,9 +32,9 @@
 
 ; test syntax-error function
 
-(check-equal? (syntax-error 1) "Syntax error on line 1.")
-(check-equal? (syntax-error 5) "Syntax error on line 5.")
+(check-equal? (syntax-error 1 "x" 'x) "Syntax error on line 1. Debug message: x... Last token: x")
+(check-equal? (syntax-error 5 "x" 'x) "Syntax error on line 5. Debug message: x... Last token: x")
 
 ; test program function
 (check-equal? (program '((EOP "$$"))) "Accept")
-(check-equal? (program '((ZERO-DIGIT "0"))) "Syntax error on line 1.")
+(check-equal? (program '((ZERO-DIGIT "0"))) "Syntax error on line 1. Debug message: program... Last token: ZERO-DIGIT")
