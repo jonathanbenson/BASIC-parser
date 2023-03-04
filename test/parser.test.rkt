@@ -148,10 +148,32 @@
         (ZERO-DIGIT "0")
         (EOL "\n")))
 
+(define check-match-expr-add
+    '(
+        (MINUS "-")
+        (NONZERO-DIGIT "1")
+        (ZERO-DIGIT "0")
+        (PLUS "+")
+        (NONZERO-DIGIT "1")
+        (ZERO-DIGIT "0")
+        (EOL "\n")))
+
 (define check-match-expr-paren
     '(
         (LPAREN "(")
         (MINUS "-")
+        (NONZERO-DIGIT "1")
+        (ZERO-DIGIT "0")
+        (RPAREN ")")
+        (EOL "\n")))
+
+(define check-match-expr-add-paren
+    '(
+        (LPAREN "(")
+        (MINUS "-")
+        (NONZERO-DIGIT "1")
+        (ZERO-DIGIT "0")
+        (PLUS "+")
         (NONZERO-DIGIT "1")
         (ZERO-DIGIT "0")
         (RPAREN ")")
@@ -166,5 +188,7 @@
 
 (check-equal? (match-expr check-match-expr-id) (list #t '((EOL "\n"))))
 (check-equal? (match-expr check-match-expr-num) (list #t '((EOL "\n"))))
+(check-equal? (match-expr check-match-expr-add) (list #t '((EOL "\n"))))
 (check-equal? (match-expr check-match-expr-paren) (list #t '((EOL "\n"))))
+(check-equal? (match-expr check-match-expr-add-paren) (list #t '((EOL "\n"))))
 (check-equal? (match-expr check-match-expr-missing-rparen) (list #f '((EOL "\n"))))
