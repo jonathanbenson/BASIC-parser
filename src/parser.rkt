@@ -47,15 +47,9 @@
             [(first match-num-result) (match-etail (second match-num-result))]
             [else (match-many
                 (list
-                    (lambda (token-stream)
-                        (if (match-token 'LPAREN token-stream)
-                            (list #t (rest token-stream))
-                            (list #f (rest token-stream))))
+                    (token-matcher 'LPAREN)
                     match-expr
-                    (lambda (token-stream)
-                        (if (match-token 'RPAREN token-stream)
-                            (list #t (rest token-stream))
-                            (list #f (rest token-stream)))))
+                    (token-matcher 'RPAREN))
                 token-stream)])))
 
 (define (match-etail token-stream)
@@ -69,41 +63,31 @@
         [(match-token 'ZERO-DIGIT token-stream) (if found-nonzero-digit? (match-idx (rest token-stream) #t) (list #f token-stream))]
         [else (if found-nonzero-digit? (list #t token-stream) (list #f token-stream))]))
 
-;;; (define (match-stmt token-stream)
-;;;     (let
-;;;         ([match-stmt-id-result
-;;;             (match-many (list
-;;;                 (lambda (token-stream)
-;;;                     (if (match-token 'ID)
-;;;                         (list #t (rest token-stream)
-;;;                         (list #f token-stream)))
-;;;                 (lambda (token-stream)
-;;;                     (if (match-token 'ASSIGN-OP)
-;;;                         (list #t (rest token-stream)
-;;;                         (list #f token-stream))))
-;;;                 match-expr)))]
-;;;         [match-stmt-if-result
-;;;             (match-many (list
-;;;                 (lambda (token-stream)
-;;;                     (if (match-token 'IF)
-;;;                         (list #t (rest token-stream)
-;;;                         (list #f token-stream))))))
-;;;                 expr
-;;;                 (lambda (token-stream)
-;;;                     (if (match-token 'THEN)
-;;;                         (list #t (rest token-stream)
-;;;                         (list #f token-stream))))]
-;;;         [match-stmt-read-result
-;;;             (match-many (list
-;;;                 (lambda (token-stream)
-;;;                     (if (match-token 'READ)
-;;;                         (list #t (rest token-stream)
-;;;                         (list #f token-stream))))
-;;;                 (lambda (token-stream)
-;;;                     (if (match-token 'ID)
-;;;                         (list #t (rest token-stream)
-;;;                         (list #f token-stream))))))])))
+(define (match-stmt token-stream)
+    (let
+        ([match-stmt-id-result
+            (match-many (list (token-matcher 'ID) (token-matcher 'ASSIGN-OP) match-expr))]
+        [match-stmt-if-result
+            (match-many (list (token-matcher 'IF) match-expr (token-matcher 'THEN)))]
+        [match-stmt-read-result
+            (match-many (list (token-matcher 'READ) (token-matcher 'ID)))]
+        [match-stmt-write-result
+            (match-many (list (token-matcher 'WRITE) match-expr))]
+        [match-stmt-goto-result
+            (match-many (list (token-matcher 'GOTO) match-idx))]
+        [match-stmt-gosub-result
+            (match-many (list (token-matcher 'GOSUB) match-idx))]
+        [match-stmt-return-result
+            (match-many (list (token-matcher 'RETURN)))])
 
+        (cond
+            [(first match-stmt-id-result) (list #t (second match-stmt-id-result))]
+            [(first match-stmt-if-result) (match-stmt (second match-stmt-id-result))]
+            [(first match-stmt-read-result) (list #t (second match-stmt-read-result))]
+            [(first match-stmt-write-result) (list #t (second match-stmt-write-result))]
+            [(first match-stmt-goto-result) (list #t (second match-stmt-goto-result))]
+            [(first match-stmt-gosub-result) (list #t (second match-stmt-gosub-result))]
+            [(first match-stmt-return-result) (list #t (second match-stmt-return-result))])))
 
 (provide
     ;;; parse
