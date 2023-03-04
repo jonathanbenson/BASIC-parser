@@ -66,23 +66,23 @@
 (define (match-stmt token-stream)
     (let
         ([match-stmt-id-result
-            (match-many (list (token-matcher 'ID) (token-matcher 'ASSIGN-OP) match-expr))]
+            (match-many (list (token-matcher 'ID) (token-matcher 'ASSIGN-OP) match-expr) token-stream)]
         [match-stmt-if-result
-            (match-many (list (token-matcher 'IF) match-expr (token-matcher 'THEN)))]
+            (match-many (list (token-matcher 'IF) match-expr (token-matcher 'THEN)) token-stream)]
         [match-stmt-read-result
-            (match-many (list (token-matcher 'READ) (token-matcher 'ID)))]
+            (match-many (list (token-matcher 'READ) (token-matcher 'ID)) token-stream)]
         [match-stmt-write-result
-            (match-many (list (token-matcher 'WRITE) match-expr))]
+            (match-many (list (token-matcher 'WRITE) match-expr) token-stream)]
         [match-stmt-goto-result
-            (match-many (list (token-matcher 'GOTO) match-idx))]
+            (match-many (list (token-matcher 'GOTO) match-idx) token-stream)]
         [match-stmt-gosub-result
-            (match-many (list (token-matcher 'GOSUB) match-idx))]
+            (match-many (list (token-matcher 'GOSUB) match-idx) token-stream)]
         [match-stmt-return-result
-            (match-many (list (token-matcher 'RETURN)))])
+            (match-many (list (token-matcher 'RETURN)) token-stream)])
 
         (cond
             [(first match-stmt-id-result) (list #t (second match-stmt-id-result))]
-            [(first match-stmt-if-result) (match-stmt (second match-stmt-id-result))]
+            [(first match-stmt-if-result) (match-stmt (second match-stmt-if-result))]
             [(first match-stmt-read-result) (list #t (second match-stmt-read-result))]
             [(first match-stmt-write-result) (list #t (second match-stmt-write-result))]
             [(first match-stmt-goto-result) (list #t (second match-stmt-goto-result))]
@@ -98,4 +98,5 @@
     token-matcher
     match-num
     match-expr
-    match-idx)
+    match-idx
+    match-stmt)

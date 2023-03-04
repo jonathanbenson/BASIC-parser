@@ -238,3 +238,57 @@
 (check-equal? (match-idx check-match-idx-zero-digits) (list #f '((ZERO-DIGIT "0") (EOL "\n"))))
 (check-equal? (match-idx check-match-idx-numsign) (list #f '((MINUS "-") (NONZERO-DIGIT "1") (ZERO-DIGIT "0") (EOL "\n"))))
 (check-equal? (match-idx check-match-idx-invalid-token) (list #f '((LPAREN "(") (EOL "\n"))))
+
+; test match-stmt
+
+(define check-match-stmt-id
+    '(
+        (ID "x")
+        (ASSIGN-OP "=")
+        (NONZERO-DIGIT "5")
+        (EOL "\n")))
+
+(define check-match-stmt-if
+    '(
+        (IF "if")
+        (NONZERO-DIGIT "5")
+        (THEN "then")
+        (RETURN "return")
+        (EOL "\n")))
+
+(define check-match-stmt-read
+    '(
+        (READ "read")
+        (ID "x")
+        (EOL "\n")))
+
+(define check-match-stmt-write
+    '(
+        (WRITE "write")
+        (NONZERO-DIGIT "1")
+        (EOL "\n")))
+
+(define check-match-stmt-goto
+    '(
+        (GOTO "goto")
+        (NONZERO-DIGIT "1")
+        (EOL "\n")))
+
+(define check-match-stmt-gosub
+    '(
+        (GOSUB "gosub")
+        (NONZERO-DIGIT "1")
+        (EOL "\n")))
+
+(define check-match-stmt-return
+    '(
+        (RETURN "return")
+        (EOL "\n")))
+
+(check-equal? (match-stmt check-match-stmt-id) (list #t '((EOL "\n"))))
+(check-equal? (match-stmt check-match-stmt-if) (list #t '((EOL "\n"))))
+(check-equal? (match-stmt check-match-stmt-read) (list #t '((EOL "\n"))))
+(check-equal? (match-stmt check-match-stmt-write) (list #t '((EOL "\n"))))
+(check-equal? (match-stmt check-match-stmt-goto) (list #t '((EOL "\n"))))
+(check-equal? (match-stmt check-match-stmt-gosub) (list #t '((EOL "\n"))))
+(check-equal? (match-stmt check-match-stmt-return) (list #t '((EOL "\n"))))
