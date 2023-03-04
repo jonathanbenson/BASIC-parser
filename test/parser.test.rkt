@@ -30,6 +30,32 @@
 (check-equal? (match-any-token (list 'ZERO-DIGIT 'GOTO 'NONZERO-DIGIT) check-token-stream) #t)
 (check-equal? (match-any-token (list 'ZERO-DIGIT 'GOTO) check-token-stream) #f)
 
+; test match-many
+(define match-many-abc-matchers
+    (list
+        (lambda (token-stream)
+            (if (match-token 'A token-stream)
+                (list #t (rest token-stream))
+                (list #f (rest token-stream))))
+        (lambda (token-stream)
+            (if (match-token 'B token-stream)
+                (list #t (rest token-stream))
+                (list #f (rest token-stream))))
+        (lambda (token-stream)
+            (if (match-token 'C token-stream)
+                (list #t (rest token-stream))
+                (list #f (rest token-stream))))))
+
+(define match-many-abc-token-stream
+    '(
+        (A "A")
+        (B "B")
+        (C "C")
+        (EOL "\n")))
+
+(check-equal? (match-many match-many-abc-matchers match-many-abc-token-stream)
+    (list #t '((EOL "\n"))))
+
 ; test syntax-error function
 
 (check-equal? (syntax-error 1 "x" 'x) "Syntax error on line 1. Debug message: x... Last token: x")

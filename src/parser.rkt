@@ -61,6 +61,7 @@
     ;;; parse
     match-token
     match-any-token
+    match-many
     syntax-error
     match-num
     match-expr)
