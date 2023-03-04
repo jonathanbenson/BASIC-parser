@@ -87,7 +87,8 @@
             [(first match-stmt-write-result) (list #t (second match-stmt-write-result))]
             [(first match-stmt-goto-result) (list #t (second match-stmt-goto-result))]
             [(first match-stmt-gosub-result) (list #t (second match-stmt-gosub-result))]
-            [(first match-stmt-return-result) (list #t (second match-stmt-return-result))])))
+            [(first match-stmt-return-result) (list #t (second match-stmt-return-result))]
+            [else (list #f token-stream)])))
 
 (provide
     ;;; parse

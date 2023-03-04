@@ -241,6 +241,10 @@
 
 ; test match-stmt
 
+(define check-match-stmt-invalid-token
+    '(
+        (EOL "\n")))
+
 (define check-match-stmt-id
     '(
         (ID "x")
@@ -256,10 +260,38 @@
         (RETURN "return")
         (EOL "\n")))
 
+(define check-match-stmt-if-invalid-expr
+    '(
+        (IF "if")
+        (RETURN "return")
+        (THEN "then")
+        (RETURN "return")
+        (EOL "\n")))
+
+(define check-match-stmt-if-missing-then
+    '(
+        (IF "if")
+        (NONZERO-DIGIT "5")
+        (RETURN "return")
+        (EOL "\n")))
+
+(define check-match-stmt-if-missing-last-stmt
+    '(
+        (IF "if")
+        (NONZERO-DIGIT "5")
+        (THEN "then")
+        (EOL "\n")))
+
 (define check-match-stmt-read
     '(
         (READ "read")
         (ID "x")
+        (EOL "\n")))
+
+(define check-match-stmt-read-no-id
+    '(
+        (READ "read")
+        (NONZERO-DIGIT "1")
         (EOL "\n")))
 
 (define check-match-stmt-write
@@ -268,9 +300,22 @@
         (NONZERO-DIGIT "1")
         (EOL "\n")))
 
+(define check-match-stmt-write-no-expr
+    '(
+        (WRITE "write")
+        (RETURN "return")
+        (EOL "\n")))
+
 (define check-match-stmt-goto
     '(
         (GOTO "goto")
+        (NONZERO-DIGIT "1")
+        (EOL "\n")))
+
+(define check-match-stmt-goto-no-idx
+    '(
+        (GOTO "goto")
+        (MINUS "-")
         (NONZERO-DIGIT "1")
         (EOL "\n")))
 
@@ -280,15 +325,30 @@
         (NONZERO-DIGIT "1")
         (EOL "\n")))
 
+(define check-match-stmt-gosub-no-idx
+    '(
+        (GOSUB "gosub")
+        (MINUS "-")
+        (NONZERO-DIGIT "1")
+        (EOL "\n")))
+
 (define check-match-stmt-return
     '(
         (RETURN "return")
         (EOL "\n")))
 
+(check-equal? (match-stmt check-match-stmt-invalid-token) (list #f check-match-stmt-invalid-token))
 (check-equal? (match-stmt check-match-stmt-id) (list #t '((EOL "\n"))))
 (check-equal? (match-stmt check-match-stmt-if) (list #t '((EOL "\n"))))
+(check-equal? (match-stmt check-match-stmt-if-invalid-expr) (list #f check-match-stmt-if-invalid-expr))
+(check-equal? (match-stmt check-match-stmt-if-missing-then) (list #f check-match-stmt-if-missing-then))
+(check-equal? (match-stmt check-match-stmt-if-missing-last-stmt) (list #f '((EOL "\n"))))
 (check-equal? (match-stmt check-match-stmt-read) (list #t '((EOL "\n"))))
+(check-equal? (match-stmt check-match-stmt-read-no-id) (list #f check-match-stmt-read-no-id))
 (check-equal? (match-stmt check-match-stmt-write) (list #t '((EOL "\n"))))
+(check-equal? (match-stmt check-match-stmt-write-no-expr) (list #f check-match-stmt-write-no-expr))
 (check-equal? (match-stmt check-match-stmt-goto) (list #t '((EOL "\n"))))
+(check-equal? (match-stmt check-match-stmt-goto-no-idx) (list #f check-match-stmt-goto-no-idx))
 (check-equal? (match-stmt check-match-stmt-gosub) (list #t '((EOL "\n"))))
+(check-equal? (match-stmt check-match-stmt-gosub-no-idx) (list #f check-match-stmt-gosub-no-idx))
 (check-equal? (match-stmt check-match-stmt-return) (list #t '((EOL "\n"))))
