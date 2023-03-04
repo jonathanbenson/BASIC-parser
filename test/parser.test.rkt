@@ -396,3 +396,19 @@
 (check-equal? (match-line check-match-line-with-linetail-missing-colon) (list #f '((WRITE "read") (NONZERO-DIGIT "1") (EOL "\n") (EOP "$$"))))
 (check-equal? (match-line check-match-line-no-linetail) (list #t '((EOP "$$"))))
 (check-equal? (match-line check-match-line-no-eol) (list #f '((EOP "$$"))))
+
+; test parse function
+
+(define file01 "test_input/file01.txt")
+(define file02 "test_input/file02.txt")
+(define file03 "test_input/file03.txt")
+(define file04 "test_input/file04.txt")
+(define file05 "test_input/file05.txt")
+(define file06 "test_input/file06.txt")
+
+(check-equal? (parse file01) "Accept")
+(check-equal? (parse file02) "Syntax error on line 3")
+(check-equal? (parse file03) "Accept")
+(check-equal? (parse file04) "Syntax error on line 3")
+(check-equal? (parse file05) "Syntax error on line 1")
+(check-equal? (parse file06) "Accept")

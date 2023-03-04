@@ -3,9 +3,6 @@
 (require rackunit "../src/scanner.rkt")
 (require rackunit "../src/token-matchers.rkt")
 
-;;; (define (parse file-path)
-;;;     (program (scan (file->string file-path) token-matchers)))
-
 (define (match-token expected-token-type token-stream)
     (if (eq? expected-token-type (first (first token-stream)))
         #t
@@ -106,8 +103,23 @@
             (match-linetails (second match-linetail-colon-result))
             (list #t token-stream))))
 
+(define (match-linelist token-stream [line-number 1])
+    (let ([match-line-result (match-line token-stream)])
+        (if (first match-line-result)
+            (match-linelist (second match-line-result) (+ line-number 1))
+            (list #t (second match-line-result) line-number))))
+
+(define (match-program token-stream)
+    (let ([match-linelist-result (match-linelist token-stream)])
+        (if (and (first match-linelist-result) (match-token 'EOP (second match-linelist-result)))
+            "Accept"
+            (string-append "Syntax error on line " (number->string (third match-linelist-result))))))
+
+(define (parse file-path)
+    (match-program (scan (file->string file-path) token-matchers)))
+
 (provide
-    ;;; parse
+    parse
     match-token
     match-any-token
     match-many
@@ -117,4 +129,5 @@
     match-expr
     match-idx
     match-stmt
-    match-line)
+    match-line
+    parse)
