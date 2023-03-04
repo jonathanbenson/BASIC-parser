@@ -28,15 +28,17 @@
                 (match-many-nonterminals (rest nonterminal-matchers) (second match-result))
                 (list #f token-stream)))))
 
-;;; (define (match-num token-stream [found-numsign? #f] [found-digit? #f])
-;;;     (cond
-;;;         [(match-any-token '(PLUS MINUS) token-stream) (match-num (rest token-stream) #t found-digit?)]
-;;;         [(first (match-any-token '(NONZERO-DIGIT ZERO-DIGIT) token-stream) ]
-
+(define (match-num token-stream [found-numsign? #f] [found-digit? #f])
+    (cond
+        [(empty? token-stream) (if found-digit? (list #t token-stream) (list #f token-stream))]
+        [(match-any-token '(PLUS MINUS) token-stream) (if found-digit? (list #f (rest token-stream)) (match-num (rest token-stream) #t found-digit?))]
+        [(match-any-token '(NONZERO-DIGIT ZERO-DIGIT) token-stream) (match-num (rest token-stream) found-numsign? #t)]
+        [else (if found-digit? (list #t token-stream) (list #f token-stream))]))
 
 
 (provide
     ;;; parse
     match-token
     match-any-token
-    syntax-error)
+    syntax-error
+    match-num)
