@@ -8,13 +8,13 @@
 
 (define (match-token expected-token-type token-stream)
     (if (eq? expected-token-type (first (first token-stream)))
-        (list #t (rest token-stream))
-        (list #f (rest token-stream))))
+        #t
+        #f))
 
 (define (match-any-token expected-token-types token-stream)
     (cond
-        [(empty? expected-token-types) (list #f (rest token-stream))]
-        [(eq? (first expected-token-types) (first (first token-stream))) (list #t (rest token-stream))]
+        [(empty? expected-token-types) #f]
+        [(eq? (first expected-token-types) (first (first token-stream))) #t]
         [else (match-any-token (rest expected-token-types) token-stream)]))
 
 (define (syntax-error line-number debug-msg last-token)
@@ -30,7 +30,8 @@
 
 ;;; (define (match-num token-stream [found-numsign? #f] [found-digit? #f])
 ;;;     (cond
-;;;         [(match-any-token '(PLUS MINUS) token-stream) 
+;;;         [(match-any-token '(PLUS MINUS) token-stream) (match-num (rest token-stream) #t found-digit?)]
+;;;         [(first (match-any-token '(NONZERO-DIGIT ZERO-DIGIT) token-stream) ]
 
 
 
