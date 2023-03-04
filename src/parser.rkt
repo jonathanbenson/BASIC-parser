@@ -20,6 +20,12 @@
 (define (syntax-error line-number debug-msg last-token)
     (string-append "Syntax error on line " (number->string line-number) ". Debug message: " debug-msg "... Last token: " (symbol->string last-token)))
 
+(define (token-matcher token-type)
+    (lambda (token-stream)
+        (if (match-token token-type token-stream)
+            (list #t (rest token-stream))
+            (list #f token-stream))))
+
 (define (match-many matchers token-stream)
     (if (empty? matchers)
         (list #t token-stream)
@@ -63,12 +69,49 @@
         [(match-token 'ZERO-DIGIT token-stream) (if found-nonzero-digit? (match-idx (rest token-stream) #t) (list #f token-stream))]
         [else (if found-nonzero-digit? (list #t token-stream) (list #f token-stream))]))
 
+;;; (define (match-stmt token-stream)
+;;;     (let
+;;;         ([match-stmt-id-result
+;;;             (match-many (list
+;;;                 (lambda (token-stream)
+;;;                     (if (match-token 'ID)
+;;;                         (list #t (rest token-stream)
+;;;                         (list #f token-stream)))
+;;;                 (lambda (token-stream)
+;;;                     (if (match-token 'ASSIGN-OP)
+;;;                         (list #t (rest token-stream)
+;;;                         (list #f token-stream))))
+;;;                 match-expr)))]
+;;;         [match-stmt-if-result
+;;;             (match-many (list
+;;;                 (lambda (token-stream)
+;;;                     (if (match-token 'IF)
+;;;                         (list #t (rest token-stream)
+;;;                         (list #f token-stream))))))
+;;;                 expr
+;;;                 (lambda (token-stream)
+;;;                     (if (match-token 'THEN)
+;;;                         (list #t (rest token-stream)
+;;;                         (list #f token-stream))))]
+;;;         [match-stmt-read-result
+;;;             (match-many (list
+;;;                 (lambda (token-stream)
+;;;                     (if (match-token 'READ)
+;;;                         (list #t (rest token-stream)
+;;;                         (list #f token-stream))))
+;;;                 (lambda (token-stream)
+;;;                     (if (match-token 'ID)
+;;;                         (list #t (rest token-stream)
+;;;                         (list #f token-stream))))))])))
+
+
 (provide
     ;;; parse
     match-token
     match-any-token
     match-many
     syntax-error
+    token-matcher
     match-num
     match-expr
     match-idx)

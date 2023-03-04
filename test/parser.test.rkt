@@ -61,6 +61,21 @@
 (check-equal? (syntax-error 1 "x" 'x) "Syntax error on line 1. Debug message: x... Last token: x")
 (check-equal? (syntax-error 5 "x" 'x) "Syntax error on line 5. Debug message: x... Last token: x")
 
+; test token-matcher function
+(define check-token-matcher-x-valid
+    '(
+        (x "x")
+        (EOL "\n")))
+
+(define check-token-matcher-x-invalid
+    '(
+        (EOL "\n")))
+
+(define token-matcher-x (token-matcher 'x))
+
+(check-equal? (token-matcher-x check-token-matcher-x-valid) (list #t '((EOL "\n"))))
+(check-equal? (token-matcher-x check-token-matcher-x-invalid) (list #f '((EOL "\n"))))
+
 ; test match-num function
 (define check-match-num-no-numsign
     '(
