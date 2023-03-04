@@ -352,3 +352,47 @@
 (check-equal? (match-stmt check-match-stmt-gosub) (list #t '((EOL "\n"))))
 (check-equal? (match-stmt check-match-stmt-gosub-no-idx) (list #f check-match-stmt-gosub-no-idx))
 (check-equal? (match-stmt check-match-stmt-return) (list #t '((EOL "\n"))))
+
+
+; test match-line
+
+(define check-match-line-with-linetail
+    '(
+        (NONZERO-DIGIT "1")
+        (READ "read")
+        (ID "x")
+        (COLON ":")
+        (WRITE "read")
+        (NONZERO-DIGIT "1")
+        (EOL "\n")
+        (EOP "$$")))
+
+(define check-match-line-with-linetail-missing-colon
+    '(
+        (NONZERO-DIGIT "1")
+        (READ "read")
+        (ID "x")
+        (WRITE "read")
+        (NONZERO-DIGIT "1")
+        (EOL "\n")
+        (EOP "$$")))
+
+(define check-match-line-no-linetail
+    '(
+        (NONZERO-DIGIT "1")
+        (READ "read")
+        (ID "x")
+        (EOL "\n")
+        (EOP "$$")))
+
+(define check-match-line-no-eol
+    '(
+        (NONZERO-DIGIT "1")
+        (READ "read")
+        (ID "x")
+        (EOP "$$")))
+
+(check-equal? (match-line check-match-line-with-linetail) (list #t '((EOP "$$"))))
+(check-equal? (match-line check-match-line-with-linetail-missing-colon) (list #f '((WRITE "read") (NONZERO-DIGIT "1") (EOL "\n") (EOP "$$"))))
+(check-equal? (match-line check-match-line-no-linetail) (list #t '((EOP "$$"))))
+(check-equal? (match-line check-match-line-no-eol) (list #f '((EOP "$$"))))

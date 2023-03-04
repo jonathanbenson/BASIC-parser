@@ -90,6 +90,22 @@
             [(first match-stmt-return-result) (list #t (second match-stmt-return-result))]
             [else (list #f token-stream)])))
 
+(define (match-line token-stream)
+    (let ([match-line-result
+        (match-many (list match-idx match-stmt match-linetails (token-matcher 'EOL)) token-stream)])
+
+        (if (first match-line-result)
+            (list #t (second match-line-result))
+            (list #f (second match-line-result)))))
+
+(define (match-linetails token-stream)
+    (let ([match-linetail-colon-result
+        (match-many (list (token-matcher 'COLON) match-stmt) token-stream)])
+
+        (if (first match-linetail-colon-result)
+            (match-linetails (second match-linetail-colon-result))
+            (list #t token-stream))))
+
 (provide
     ;;; parse
     match-token
@@ -100,4 +116,5 @@
     match-num
     match-expr
     match-idx
-    match-stmt)
+    match-stmt
+    match-line)
