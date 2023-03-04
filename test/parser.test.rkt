@@ -82,6 +82,22 @@
         (ZERO-DIGIT "0")
         (EOL "\n")))
 
+(define check-match-num-post-plus
+    '(
+        (PLUS "+")
+        (NONZERO-DIGIT "1")
+        (ZERO-DIGIT "0")
+        (PLUS "+")
+        (EOL "\n")))
+
+(define check-match-num-post-minus
+    '(
+        (PLUS "+")
+        (NONZERO-DIGIT "1")
+        (ZERO-DIGIT "0")
+        (MINUS "-")
+        (EOL "\n")))
+
 (define check-match-num-plus-zeros
     '(
         (PLUS "+")
@@ -111,6 +127,8 @@
 (check-equal? (match-num check-match-num-no-numsign) (list #t '((EOL "\n"))))
 (check-equal? (match-num check-match-num-minus) (list #t '((EOL "\n"))))
 (check-equal? (match-num check-match-num-plus) (list #t '((EOL "\n"))))
+(check-equal? (match-num check-match-num-post-plus) (list #t '((PLUS "+") (EOL "\n"))))
+(check-equal? (match-num check-match-num-post-minus) (list #t '((MINUS "-") (EOL "\n"))))
 (check-equal? (match-num check-match-num-minus-zeros) (list #t '((EOL "\n"))))
 (check-equal? (match-num check-match-num-plus-zeros) (list #t '((EOL "\n"))))
 (check-equal? (match-num check-match-num-minus-only) (list #f '((EOL "\n"))))
