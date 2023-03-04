@@ -57,6 +57,12 @@
         [(match-any-token '(PLUS MINUS ASSIGN-OP) token-stream) (match-expr (rest token-stream))]
         [else (list #t token-stream)]))
 
+(define (match-idx token-stream [found-nonzero-digit? #f])
+    (cond
+        [(match-token 'NONZERO-DIGIT token-stream) (match-idx (rest token-stream) #t)]
+        [(match-token 'ZERO-DIGIT token-stream) (if found-nonzero-digit? (match-idx (rest token-stream) #t) (list #f token-stream))]
+        [else (if found-nonzero-digit? (list #t token-stream) (list #f token-stream))]))
+
 (provide
     ;;; parse
     match-token
@@ -64,4 +70,5 @@
     match-many
     syntax-error
     match-num
-    match-expr)
+    match-expr
+    match-idx)

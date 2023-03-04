@@ -192,3 +192,34 @@
 (check-equal? (match-expr check-match-expr-paren) (list #t '((EOL "\n"))))
 (check-equal? (match-expr check-match-expr-add-paren) (list #t '((EOL "\n"))))
 (check-equal? (match-expr check-match-expr-missing-rparen) (list #f '((EOL "\n"))))
+
+
+; test match-idx
+
+(define check-match-idx-valid
+    '(
+        (NONZERO-DIGIT "1")
+        (ZERO-DIGIT "0")
+        (EOL "\n")))
+
+(define check-match-idx-zero-digits
+    '(
+        (ZERO-DIGIT "0")
+        (EOL "\n")))
+
+(define check-match-idx-numsign
+    '(
+        (MINUS "-")
+        (NONZERO-DIGIT "1")
+        (ZERO-DIGIT "0")
+        (EOL "\n")))
+
+(define check-match-idx-invalid-token
+    '(
+        (LPAREN "(")
+        (EOL "\n")))
+
+(check-equal? (match-idx check-match-idx-valid) (list #t '((EOL "\n"))))
+(check-equal? (match-idx check-match-idx-zero-digits) (list #f '((ZERO-DIGIT "0") (EOL "\n"))))
+(check-equal? (match-idx check-match-idx-numsign) (list #f '((MINUS "-") (NONZERO-DIGIT "1") (ZERO-DIGIT "0") (EOL "\n"))))
+(check-equal? (match-idx check-match-idx-invalid-token) (list #f '((LPAREN "(") (EOL "\n"))))
