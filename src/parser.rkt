@@ -34,19 +34,27 @@
         [(match-any-token '(NONZERO-DIGIT ZERO-DIGIT) token-stream) (match-num (rest token-stream) found-numsign? #t)]
         [else (if found-digit? (list #t token-stream) (list #f token-stream))]))
 
-;;; (define (match-expr token-stream)
-;;;     (let ([match-num-result (match-num token-stream)])
-;;;         (cond
-;;;             [(match-token 'ID token-stream) (match-etail (rest token-stream))]
-;;;             [(first match-num-result) (match-etail (second match-num-result))]
-;;;             [(match-many)]
+(define (match-expr token-stream)
+    (let ([match-num-result (match-num token-stream)])
+        (cond
+            [(match-token 'ID token-stream) (match-etail (rest token-stream))]
+            [(first match-num-result) (match-etail (second match-num-result))]
+            [else (match-many
+                (list
+                    (lambda (token-stream)
+                        (if (match-token 'LPAREN token-stream)
+                            (list #t (rest token-stream))
+                            (list #f (rest token-stream))))
+                    match-expr
+                    (lambda (token-stream)
+                        (if (match-token 'RPAREN token-stream)
+                            (list #t (rest token-stream))
+                            (list #f (rest token-stream))))))])))
 
-;;; (define (match-etail token-stream)
-;;;     (cond
-;;;         [(match-match-any-token '(PLUS MINUS ASSIGN-OP) token-stream) (match-expr (rest token-stream))]
-;;;         [else (list #t token-stream)]))
-
-
+(define (match-etail token-stream)
+    (cond
+        [(match-any-token '(PLUS MINUS ASSIGN-OP) token-stream) (match-expr (rest token-stream))]
+        [else (list #t token-stream)]))
 
 (provide
     ;;; parse
