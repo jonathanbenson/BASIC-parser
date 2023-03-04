@@ -92,4 +92,35 @@
 (check-equal? (match-num check-match-num-invalid-token) (list #f '((EOL "\n"))))
 
 ; test match-expr function
+(define check-match-expr-id
+    '(
+        (ID "asdf")
+        (EOL "\n")))
 
+(define check-match-expr-num
+    '(
+        (MINUS "-")
+        (NONZERO-DIGIT "1")
+        (ZERO-DIGIT "0")
+        (EOL "\n")))
+
+(define check-match-expr-paren
+    '(
+        (LPAREN "(")
+        (MINUS "-")
+        (NONZERO-DIGIT "1")
+        (ZERO-DIGIT "0")
+        (RPAREN ")")
+        (EOL "\n")))
+
+(define check-match-expr-missing-rparen
+    '(
+        (LPAREN "(")
+        (NONZERO-DIGIT "1")
+        (ZERO-DIGIT "0")
+        (EOL "\n")))
+
+(check-equal? (match-expr check-match-expr-id) (list #t '((EOL "\n"))))
+(check-equal? (match-expr check-match-expr-num) (list #t '((EOL "\n"))))
+(check-equal? (match-expr check-match-expr-paren) (list #t '((EOL "\n"))))
+(check-equal? (match-expr check-match-expr-missing-rparen) (list #f '((EOL "\n"))))

@@ -49,7 +49,8 @@
                     (lambda (token-stream)
                         (if (match-token 'RPAREN token-stream)
                             (list #t (rest token-stream))
-                            (list #f (rest token-stream))))))])))
+                            (list #f (rest token-stream)))))
+                token-stream)])))
 
 (define (match-etail token-stream)
     (cond
@@ -61,4 +62,5 @@
     match-token
     match-any-token
     syntax-error
-    match-num)
+    match-num
+    match-expr)
