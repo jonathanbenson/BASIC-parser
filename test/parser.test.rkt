@@ -56,11 +56,6 @@
 (check-equal? (match-many match-many-abc-matchers match-many-abc-token-stream)
     (list #t '((EOL "\n"))))
 
-; test syntax-error function
-
-(check-equal? (syntax-error 1 "x" 'x) "Syntax error on line 1. Debug message: x... Last token: x")
-(check-equal? (syntax-error 5 "x" 'x) "Syntax error on line 5. Debug message: x... Last token: x")
-
 ; test token-matcher function
 (define check-token-matcher-x-valid
     '(

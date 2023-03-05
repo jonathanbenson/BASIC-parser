@@ -3,19 +3,26 @@
 (require rackunit "../src/scanner.rkt")
 (require rackunit "../src/token-matchers.rkt")
 
+; input:
+;   expected-token-type is a symbol representing the token type to check
+;   token-stream is a list of tokens '((TOKEN-TYPE:symbol VAL:str) ...)
+; output:
+;   #t if the first token has the token type of token-type, else #f
 (define (match-token expected-token-type token-stream)
     (if (eq? expected-token-type (first (first token-stream)))
         #t
         #f))
 
+; input:
+;   expected-token-types is a list of symbols representing the types of tokens to check
+;   token-stream is a list of tokens '((TOKEN-TYPE:symbol VAL:str) ...)
+; output:
+;   #t if any of the expected-token-types match the token type of the first token in token-stream, else #f
 (define (match-any-token expected-token-types token-stream)
     (cond
         [(empty? expected-token-types) #f]
         [(eq? (first expected-token-types) (first (first token-stream))) #t]
         [else (match-any-token (rest expected-token-types) token-stream)]))
-
-(define (syntax-error line-number debug-msg last-token)
-    (string-append "Syntax error on line " (number->string line-number) ". Debug message: " debug-msg "... Last token: " (symbol->string last-token)))
 
 (define (token-matcher token-type)
     (lambda (token-stream)
@@ -132,7 +139,6 @@
     match-token
     match-any-token
     match-many
-    syntax-error
     token-matcher
     match-num
     match-expr
