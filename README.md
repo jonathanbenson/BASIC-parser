@@ -1,7 +1,7 @@
 # BASIC Parser
 
 ### Summary
-A recursive-descent parser for a simplified version of the early BASIC programming language.
+A recursive-descent parser for a simplified version of the early BASIC programming language. The parser will output "Accept" for a valid source program, or "Syntax error on line #" if there is a syntax error. There is a special case where the syntax error is because of a missing line number; in this case, the program will output just "Syntax error".
 
 ### Grammar
 ```
