@@ -234,7 +234,7 @@
         (LPAREN "(")
         (EOL "\n")))
 
-(check-equal? (match-idx check-match-idx-valid) (list #t '((EOL "\n"))))
+(check-equal? (match-idx check-match-idx-valid) (list #t '((EOL "\n")) "10"))
 (check-equal? (match-idx check-match-idx-zero-digits) (list #f '((ZERO-DIGIT "0") (EOL "\n"))))
 (check-equal? (match-idx check-match-idx-numsign) (list #f '((MINUS "-") (NONZERO-DIGIT "1") (ZERO-DIGIT "0") (EOL "\n"))))
 (check-equal? (match-idx check-match-idx-invalid-token) (list #f '((LPAREN "(") (EOL "\n"))))
@@ -359,6 +359,7 @@
 (define check-match-line-with-linetail
     '(
         (NONZERO-DIGIT "1")
+        (NONZERO-DIGIT "5")
         (READ "read")
         (ID "x")
         (COLON ":")
@@ -392,10 +393,10 @@
         (ID "x")
         (EOP "$$")))
 
-(check-equal? (match-line check-match-line-with-linetail) (list #t '((EOP "$$"))))
-(check-equal? (match-line check-match-line-with-linetail-missing-colon) (list #f '((WRITE "read") (NONZERO-DIGIT "1") (EOL "\n") (EOP "$$"))))
-(check-equal? (match-line check-match-line-no-linetail) (list #t '((EOP "$$"))))
-(check-equal? (match-line check-match-line-no-eol) (list #f '((EOP "$$"))))
+(check-equal? (match-line check-match-line-with-linetail) (list #t '((EOP "$$")) 15))
+(check-equal? (match-line check-match-line-with-linetail-missing-colon) (list #f '((WRITE "read") (NONZERO-DIGIT "1") (EOL "\n") (EOP "$$")) 1))
+(check-equal? (match-line check-match-line-no-linetail) (list #t '((EOP "$$")) 1))
+(check-equal? (match-line check-match-line-no-eol) (list #f '((EOP "$$")) 1))
 
 ; test parse function
 
@@ -407,8 +408,8 @@
 (define file06 "test_input/file06.txt")
 
 (check-equal? (parse file01) "Accept")
-(check-equal? (parse file02) "Syntax error on line 3")
+(check-equal? (parse file02) "Syntax error on line 30")
 (check-equal? (parse file03) "Accept")
-(check-equal? (parse file04) "Syntax error on line 3")
-(check-equal? (parse file05) "Syntax error on line 1")
+(check-equal? (parse file04) "Syntax error on line 30")
+(check-equal? (parse file05) "Syntax error (no line number)")
 (check-equal? (parse file06) "Accept")
