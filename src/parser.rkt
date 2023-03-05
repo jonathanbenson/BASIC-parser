@@ -24,26 +24,51 @@
         [(eq? (first expected-token-types) (first (first token-stream))) #t]
         [else (match-any-token (rest expected-token-types) token-stream)]))
 
+; input:
+;   token-type is the symbol representing the token to check
+; output:
+;   a lambda function that checks if the first token of a token stream has the token type of token-type
 (define (token-matcher token-type)
     (lambda (token-stream)
         (if (match-token token-type token-stream)
             (list #t (rest token-stream))
             (list #f token-stream))))
 
+; input:
+;   matchers is a list of functions that return a list pair '(DOES-MATCH:bool REST-TOKENS:list) if ALL
+;       of the matchers match to the token stream one after another (the previous matcher pops off the tokens it matches with)
+;   token-stream is a list of tokens
+; output:
+;   #t if all the matcher functions match the token-stream one after another, #f if any of the matcher functions don't match
 (define (match-many matchers token-stream)
     (if (empty? matchers)
+
+        ; all of the matchers have matched successfully to the top of the token stream
         (list #t token-stream)
+
         (let ([match-result ((first matchers) token-stream)])
             (if (first match-result)
                 (match-many (rest matchers) (second match-result))
+
+                ; one of the matchers did not match
                 (list #f token-stream)))))
 
+; input:
+;   token-stream is a list of tokens
+;   found-numsign? is used to keep track of whether or not a numsign (+ or -) token has been encountered
+;   found-digit? is used to keep track of whether or not a nonzero or zero digit token (0-9) has been encountered
+; output:
+;   a list pair '(IS-NUM:bool REST-TOKENS:list) where IS-NUM is whether or not the start of the token stream is a num. Refer to grammar.txt.
 (define (match-num token-stream [found-numsign? #f] [found-digit? #f])
     (cond
         [(match-any-token '(PLUS MINUS) token-stream) (if (and found-numsign? found-digit?) (list #t token-stream) (match-num (rest token-stream) #t found-digit?))]
         [(match-any-token '(NONZERO-DIGIT ZERO-DIGIT) token-stream) (match-num (rest token-stream) found-numsign? #t)]
         [else (if found-digit? (list #t token-stream) (list #f token-stream))]))
 
+; input:
+;   token-stream is a list of tokens
+; output:
+;   a list pair '(IS-EXPR:bool REST-TOKENS:list) where IS-EXPR is whether or not the start of the token stream is an expression. Refer to grammar.txt.
 (define (match-expr token-stream)
     (let ([match-num-result (match-num token-stream)])
         (cond
@@ -56,6 +81,10 @@
                     (token-matcher 'RPAREN))
                 token-stream)])))
 
+; input:
+;   token-stream is a list of tokens
+; output:
+;   a list pair '(IS-ETAIL:bool REST-TOKENS:list) where IS-ETAIL is whether or not the start of the token stream is an expression tail. Refer to grammar.txt.
 (define (match-etail token-stream)
     (cond
         [(match-any-token '(PLUS MINUS ASSIGN-OP) token-stream) (match-expr (rest token-stream))]
@@ -72,6 +101,10 @@
             (list #t token-stream val)
             (list #f token-stream))]))
 
+; input:
+;   token-stream is a list of tokens
+; output:
+;   a list pair '(IS-STMT:bool REST-TOKENS:list) where IS-STMT is whether or not the start of the token stream is a statement. Refer to grammar.txt.
 (define (match-stmt token-stream)
     (let
         ([match-stmt-id-result
@@ -99,6 +132,10 @@
             [(first match-stmt-return-result) (list #t (second match-stmt-return-result))]
             [else (list #f token-stream)])))
 
+; input:
+;   token-stream is a list of tokens
+; output:
+;   a list pair '(IS-LINE:bool REST-TOKENS:list) where IS-LINE is whether or not the start of the token stream is a line. Refer to grammar.txt.
 (define (match-line token-stream)
     (let
         ([match-line-result
@@ -109,6 +146,10 @@
             (list #t (second match-line-result) (if (first match-idx-result) (string->number (third match-idx-result)) 0))
             (list #f (second match-line-result) (if (first match-idx-result) (string->number (third match-idx-result)) 0)))))
 
+; input:
+;   token-stream is a list of tokens
+; output:
+;   a list pair '(IS-LINETAILS:bool REST-TOKENS:list) where IS-LINETAILS is whether or not the start of the token stream is a repetition of linetails. Refer to grammar.txt.
 (define (match-linetails token-stream)
     (let ([match-linetail-colon-result
         (match-many (list (token-matcher 'COLON) match-stmt) token-stream)])
@@ -117,12 +158,20 @@
             (match-linetails (second match-linetail-colon-result))
             (list #t token-stream))))
 
+; input:
+;   token-stream is a list of tokens
+; output:
+;   a list pair '(IS-LINELIST:bool REST-TOKENS:list) where IS-LINELIST is whether or not the start of the token stream is a line list. Refer to grammar.txt.
 (define (match-linelist token-stream)
     (let ([match-line-result (match-line token-stream)])
         (if (first match-line-result)
             (match-linelist (second match-line-result))
             (list #t (second match-line-result) (third match-line-result)))))
 
+; input:
+;   token-stream is a list of tokens
+; output:
+;   a list pair '(IS-PROGRAM:bool REST-TOKENS:list) where IS-PROGRAM is whether or not the start of the token stream is a program. Refer to grammar.txt.
 (define (match-program token-stream)
     (let ([match-linelist-result (match-linelist token-stream)])
         (if (and (first match-linelist-result) (match-token 'EOP (second match-linelist-result)))
@@ -131,6 +180,16 @@
                 (string-append "Syntax error on line " (number->string (third match-linelist-result)))
                 "Syntax error (no line number)"))))
 
+; input:
+;   string file path of the source program
+; output:
+;   if there is a syntax error:
+;       if there is a line number associated with the syntax error:
+;           then it will output "Syntax error on line #"
+;       else :
+;           it will output just "Syntax error"
+;   else if there is no syntax error :
+;       then it will output "Accept"
 (define (parse file-path)
     (match-program (scan (file->string file-path) token-matchers)))
 
